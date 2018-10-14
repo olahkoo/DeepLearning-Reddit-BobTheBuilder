@@ -14,7 +14,11 @@ tokenizer = Tokenizer()
 # now let's tokenize the body part
 def dataset_preparation(data):
     # split text to lines
-    corpus = data.lower().split("\n")
+    corpus = []
+    for single_comment in data:
+        for comment_part in single_comment.lower().split("\n"):
+            corpus.append(comment_part)
+    
     tokenizer.fit_on_texts(corpus)
 
     # Words and their index values
@@ -41,7 +45,7 @@ comment_bodies = []
 for comment in data:
     comment_bodies.append(comment["body"])
 
-input_seq, total_words = dataset_preparation(comment_bodies[0])
+input_seq, total_words = dataset_preparation(comment_bodies[:50])
 predictors, label = input_seq[:,:-1], input_seq[:,-1]
 print( len(predictors), len(label))
 
