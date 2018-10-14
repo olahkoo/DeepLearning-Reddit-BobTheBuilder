@@ -9,14 +9,18 @@ with open('data/askreddit.json') as f:
 
 print(data[0])
 
-# now let's tokenize the body part
-
 tokenizer = Tokenizer()
 
+# now let's tokenize the body part
 def dataset_preparation(data):
     # split text to lines
     corpus = data.lower().split("\n")
     tokenizer.fit_on_texts(corpus)
+
+    # Words and their index values
+    for key, value in tokenizer.word_index.items():
+        print(f"{key} -> {value}")
+
     total_words = len(tokenizer.word_index) + 1
     input_sequences = []
     for line in corpus:
@@ -33,7 +37,11 @@ def dataset_preparation(data):
                           maxlen=max_sequence_len, padding='pre'))
     return input_sequences, total_words
 
-input_seq, total_words = dataset_preparation(data[0]["body"])
+comment_bodies = []
+for comment in data:
+    comment_bodies.append(comment["body"])
+
+input_seq, total_words = dataset_preparation(comment_bodies[0])
 predictors, label = input_seq[:,:-1], input_seq[:,-1]
 print( len(predictors), len(label))
 
@@ -45,3 +53,17 @@ print(df)
 # Label should be one-hot encoded for learning
 import keras.utils as k_utils
 label = k_utils.to_categorical(label, num_classes=total_words)
+
+print(label)
+
+# Separating the training, validation and test data
+valid_split = 0.2
+test_split = 0.1
+sample_size = predictors.shape[0]
+
+X_train = predictors[0:int(sample_size * (1 - valid_split - test_split))]
+Y_train =      label[0:int(sample_size * (1 - valid_split - test_split))]
+X_valid = predictors[int(sample_size * (1 - valid_split - test_split)):int(sample_size * (1 - test_split))]
+Y_valid =      label[int(sample_size * (1 - valid_split - test_split)):int(sample_size * (1 - test_split))]
+X_test  = predictors[int(sample_size * (1 - test_split)):]
+Y_test  =      label[int(sample_size * (1 - test_split)):]
