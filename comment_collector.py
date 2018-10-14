@@ -4,7 +4,7 @@ from praw.models import Subreddit, Submission, Comment, MoreComments
 import time
 import json
 
-# Használt api végpontok a commentekhez
+# REST API - URL's used to collect comments
 # [/r/subreddit]/api/info
 # /api/morechildren
 
@@ -22,7 +22,7 @@ class CommentDTO(object):
     def _asdict(self):
         return self.__dict__
 
-# Felhasználó készítés
+# Create user
 # https://github.com/reddit-archive/reddit/wiki/OAuth2-Quick-Start-Example#first-steps
 
 reddit = Reddit(user_agent='Comment Extraction (by /u/USERNAME)',
@@ -31,7 +31,6 @@ reddit = Reddit(user_agent='Comment Extraction (by /u/USERNAME)',
                      username='da189a5d30c16',
                      password='123456789')
 
-# Csak olvasni fogunk
 reddit.read_only = True
 
 # subreddit = reddit.subreddit('redditdev')
@@ -53,7 +52,7 @@ for submission in customSubmissionList:
     print(submission.selftext)
     print(submission.score)
 
-    # Minden MoreComments kifejtése
+    # Expanding MoreComments expressions
     while True:
         try:
             submission.comments.replace_more(limit=None)
@@ -62,8 +61,8 @@ for submission in customSubmissionList:
             print(f'Handling replace_more exception. {e}')
             time.sleep(1)
 
-    # Ezek a ténylegesen csak legfelső szinten álló kommentek
-    # Comment vagy MoreComments példányok
+    # These are only the top level comments
+    # Instances of "Commment" or "MoreComment"
     # top_level_comments = list(submission.comments)
     # for top_level_comment in top_level_comments:
         # print(f'COMMENT: {top_level_comment.body} {top_level_comment.score}')
@@ -97,6 +96,6 @@ for submission in customSubmissionList:
     print(f'Collected  comment counter: {len(submission.comments.list())}')
     print('-- END --')
 
-    # Flattened lista, valszeg nem fog kelleni
+    # Flattened list, probably not useful for us 
     # all_comments = submission.comments.list()
 
