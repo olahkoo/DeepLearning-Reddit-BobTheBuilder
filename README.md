@@ -11,14 +11,17 @@ learned correlations.
 The learning dataset consists of tokenized and character wise preprocessed data.
 
 ## Source files
+
 ### redditPirate.py
 
 Collects some comments from a reddit submission using the Reddit API.
 
-### dataPreparation.py
+### char_preprocess.py
+
 Prepares the data for an LSTM, using character based tokenization.
 
-### tokenizer.py
+### word_preprocess.py
+
 Prepares the data for an LSTM, using word based tokenization.
 
 ## Team members
