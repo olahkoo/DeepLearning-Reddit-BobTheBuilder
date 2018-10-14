@@ -12,7 +12,7 @@ The learning dataset consists of tokenized and character wise preprocessed data.
 
 ## Source files
 
-### redditPirate.py
+### comment_collector.py
 
 Collects some comments from a reddit submission using the Reddit API.
 
