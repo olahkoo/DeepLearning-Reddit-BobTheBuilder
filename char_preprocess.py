@@ -140,46 +140,72 @@ def create_model(X_train, Y_train, X_valid, Y_valid, X_test, Y_test):
         validation_loss = np.amax(result.history['val_loss'])
         return {'loss': validation_loss, 'status': STATUS_OK, 'model': model}
 
-
-best_run, best_model = optim.minimize(model=create_model,
-                                          data=data,
-                                          algo=tpe.suggest,
-                                          max_evals=10,
-                                          trials=Trials())
-
-best_model.save('models/char_based_optimized_0.hdf5')
-
-print("Best performing model chosen hyper-parameters:")
-print(best_run)
-print()
-
+# some data we need for evaluating and testing the model
 X_train, Y_train, X_valid, Y_valid, X_test, Y_test = data()
 comments, characters, n_to_char, char_to_n = load_comments()
 
 random.seed(42)
 rand_index = random.randint(0, len(comments) - 1)
 
-for iteration in range(1, 10):
-        print(f'Iteration {iteration}, training for 10 more epochs')
+# training a model with hyperparameter optimalization, then further training it and saving the models to use them later
+def train_model():
+        best_run, best_model = optim.minimize(model=create_model,
+                                                data=data,
+                                                algo=tpe.suggest,
+                                                max_evals=10,
+                                                trials=Trials())
 
-        n_batch = [64, 128, 256][best_run['n_batch']]
-        best_model.fit(X_train, Y_train,
-                batch_size = n_batch,
-                epochs = 10,
-                verbose = 2,
-                validation_data = (X_valid, Y_valid),
-                shuffle=True)
-        best_model.save(f'models/char_based_optimized_{iteration}.hdf5')
+        best_model.save('models/char_based_optimized_0.hdf5')
 
+        print("Best performing model chosen hyper-parameters:")
+        print(best_run)
+        print()
+
+        for iteration in range(1, 10):
+                print(f'Iteration {iteration}, training for 10 more epochs')
+
+                n_batch = [64, 128, 256][best_run['n_batch']]
+                best_model.fit(X_train, Y_train,
+                        batch_size = n_batch,
+                        epochs = 10,
+                        verbose = 2,
+                        validation_data = (X_valid, Y_valid),
+                        shuffle=True)
+                best_model.save(f'models/char_based_optimized_{iteration}.hdf5')
+
+                rand_comment = list(comments[rand_index])[:len(X_train[0])]
+
+                string_mapped = [char_to_n[c] for c in rand_comment]
+
+                for _ in range(200):
+                        x = np.reshape(string_mapped,(1,len(string_mapped), 1))
+                        x = x / float(len(characters))
+
+                        pred = best_model.predict(x, verbose=0)
+                        pred_index = np.argmax(pred)
+                        rand_comment.append(n_to_char[pred_index])
+
+                        string_mapped.append(pred_index)
+                        string_mapped = string_mapped[1:len(string_mapped)]
+
+                # the generated comment
+                print(''.join(rand_comment))
+                print()
+
+# loading a model and generating 400 characters with it from a random comment
+def test_data(iteration = 9):
+        model = load_model(f'models/char_based_optimized_{iteration}.hdf5')
+
+        rand_index = random.randint(0, len(comments) - 1)
         rand_comment = list(comments[rand_index])[:len(X_train[0])]
 
         string_mapped = [char_to_n[c] for c in rand_comment]
 
-        for i in range(200):
+        for _ in range(400):
                 x = np.reshape(string_mapped,(1,len(string_mapped), 1))
                 x = x / float(len(characters))
 
-                pred = best_model.predict(x, verbose=0)
+                pred = model.predict(x, verbose=0)
                 pred_index = np.argmax(pred)
                 rand_comment.append(n_to_char[pred_index])
 
@@ -189,3 +215,6 @@ for iteration in range(1, 10):
         # the generated comment
         print(''.join(rand_comment))
         print()
+
+train_model()
+test_data()
