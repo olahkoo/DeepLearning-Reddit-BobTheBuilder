@@ -147,45 +147,45 @@ best_run, best_model = optim.minimize(model=create_model,
                                           max_evals=10,
                                           trials=Trials())
 
-# model = load_model('models/char_based_initial.hdf5')
-# model = load_model('models/char_based_early_stopping.hdf5')
-
-# the text we generate starts with this line
-# string_mapped = X[420]
-# full_text = [n_to_char[c] for c in string_mapped]
-# full_text = list("Hi Reddit. I am Senator Bernie Sanders. I'll start answering questions at 2 p.m. The most important ")
+best_model.save('models/char_based_optimized_0.hdf5')
 
 print("Best performing model chosen hyper-parameters:")
 print(best_run)
 print()
-
-# full_text = list("Pineapples do not grow on palm trees. I always thought there were certain types of palm trees that a")[:seq_length]
-# string_mapped = [char_to_n[c] for c in full_text]
-# print(len(full_text))
 
 X_train, Y_train, X_valid, Y_valid, X_test, Y_test = data()
 comments, characters, n_to_char, char_to_n = load_comments()
 
 random.seed(42)
 rand_index = random.randint(0, len(comments) - 1)
-rand_comment = list(comments[rand_index])[:len(X_train[0])]
 
-print(''.join(rand_comment))
+for iteration in range(1, 10):
+        print(f'Iteration {iteration}, training for 10 more epochs')
 
-string_mapped = [char_to_n[c] for c in rand_comment]
+        n_batch = [64, 128, 256][best_run['n_batch']]
+        best_model.fit(X_train, Y_train,
+                batch_size = n_batch,
+                epochs = 10,
+                verbose = 2,
+                validation_data = (X_valid, Y_valid),
+                shuffle=True)
+        best_model.save(f'models/char_based_optimized_{iteration}.hdf5')
 
-print(n_to_char)
+        rand_comment = list(comments[rand_index])[:len(X_train[0])]
 
-for i in range(200):
-        x = np.reshape(string_mapped,(1,len(string_mapped), 1))
-        x = x / float(len(characters))
+        string_mapped = [char_to_n[c] for c in rand_comment]
 
-        pred = best_model.predict(x, verbose=0)
-        pred_index = np.argmax(pred)
-        rand_comment.append(n_to_char[pred_index])
+        for i in range(200):
+                x = np.reshape(string_mapped,(1,len(string_mapped), 1))
+                x = x / float(len(characters))
 
-        string_mapped.append(pred_index)
-        string_mapped = string_mapped[1:len(string_mapped)]
+                pred = best_model.predict(x, verbose=0)
+                pred_index = np.argmax(pred)
+                rand_comment.append(n_to_char[pred_index])
 
-# the generated comment
-print(''.join(rand_comment))
+                string_mapped.append(pred_index)
+                string_mapped = string_mapped[1:len(string_mapped)]
+
+        # the generated comment
+        print(''.join(rand_comment))
+        print()
