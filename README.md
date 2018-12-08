@@ -89,20 +89,20 @@ the solutions above. From the comments we need the following information:
   achieve that it was also needed to calculate the occurrencies of the words.
 
 
-This implementation of *word2vec* uses Negative sampling[2] in order to
+This implementation of *word2vec* uses Negative sampling[1] in order to
 replace the expensive *sotfmax* activation with a simple sigmoid activation. We
-decided to use *Skip-gram*{TODO bibl} which predicts surrounding context based on the target
-word. As an alternative we tried out using *CBOW*, but Skip-gram turned out to be
+decided to use *Skip-gram*[2] which predicts surrounding context based on the target
+word. As an alternative we tried out using *CBOW*i[2], but Skip-gram turned out to be
 more effective in this scenario.
 
 As a similarity measure - which is the core of the word2vec learning process -
-we decided to use cosine similarity score{TODO bibl}, because it is used nowadays in most
+we decided to use cosine similarity score[3], because it is used nowadays in most
 of the projects with similar problems.
 
 The learning process is the following:
 - The network takes two words - represented as an integer - as an input.
 - The two integers are converted to a vector representation with the help of a
-  network layer. This is an embedding layer{TODO bibl} which has a functionality
+  network layer. This is an embedding layer which has a functionality
   similar to a lookup table. The goal of the network is to teach this lookup
   table to return "similar" vectors to similar words, and vectors with more
   distance in case the input words are not similar.
@@ -148,6 +148,18 @@ random choosing factor to the algorithm, but it is not implemented yet.
 [1] Peter F. Brown, Peter V. deSouza, Robert L. Mercer, Vincent J. Delia Pietra,
 Jenifer C. Lai, 1992, Class-based n-gram models of natural language, https://dl.acm.org/citation.cfm?id=176316
 
-[2]
+[2] Tomas Mikolov, Ilya Sutskever, Kai Chen, Greg S. Corrado, Jeff Dean, NIPS, 2013, Distributed Representations of Words and Phrases and their Compositionality, http://papers.nips.cc/paper/5021-distributed-representations-of-words-andphrases
+
+[3] P.-N. Tan, M. Steinbach & V. Kumar, 2005, Introduction to Data Mining,
+Addison-Wesley
+
+### Additional references
+
+This section proveds more resources that were used during the work.
+
+- [Understanding LSTM Networks](http://colah.github.io/posts/2015-08-Understanding-LSTMs/)
+- [Reddig API documentation](https://www.reddit.com/dev/api/)
+- [A Word2Vec Keras tutorial](http://adventuresinmachinelearning.com/word2vec-keras-tutorial/)
+- [How to Develop Word Embeddings in Python with Gensim](https://machinelearningmastery.com/develop-word-embeddings-python-gensim/)
 
 
