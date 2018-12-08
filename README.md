@@ -64,6 +64,13 @@ The hiperparameters of the model were chosen with a manual approach based on our
 intuition and several attempts. With *adam* optimization and categorical
 crossentropy as a loss function the model seems to work pretty well.
 
+#### Usage
+
+- Make sure `data/askreddit.json` is available (run *comment_collector.py* if
+  not).
+- Run *word_learning.py*. The output of the algorithm can be found in the
+  output.
+
 ### Word2vec approach
 
 As an alternative to the above two solutions we created a Keras implementation
@@ -126,7 +133,7 @@ random choosing factor to the algorithm, but it is not implemented yet.
 #### Usage
 
 - Make sure `data/askreddit.json` is available (run *comment_collector.py* if
-  not.
+  not).
 - run *word2vec_learning.py*. It will take a while. One can see the predicted
   words in the output.
 
