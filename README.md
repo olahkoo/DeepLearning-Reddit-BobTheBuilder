@@ -53,7 +53,7 @@ line before the current word.
 
 That way we can predict the next word based on the n-gram context.
 
-Regarding the model itself, we used an SLTM network for learning the coherence
+Regarding the model itself, we used an *LSTM* network for learning the coherence
 of the words, and softmax is used as the activation of the output. The design of
 the model can be found in *word_learning.py*. The output of the network is
 vector of probabilities representing the likelihood of a word coming after the
