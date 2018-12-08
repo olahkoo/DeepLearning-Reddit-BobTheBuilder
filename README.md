@@ -48,7 +48,7 @@ it can be used to create a word-based learning on comments later on.
 
 Our goal is to create a bidirectional map of words which maps the words to
 a one-hot encoded integer representation. Also, each word is paired up with an
-n-gram context{TODO bibl}, which basically means the words occurred in the same
+n-gram context[1], which basically means the words occurred in the same
 line before the current word.
 
 That way we can predict the next word based on the n-gram context.
@@ -89,7 +89,7 @@ the solutions above. From the comments we need the following information:
   achieve that it was also needed to calculate the occurrencies of the words.
 
 
-This implementation of *word2vec* uses Negative sampling{TODO bibl} in order to
+This implementation of *word2vec* uses Negative sampling[2] in order to
 replace the expensive *sotfmax* activation with a simple sigmoid activation. We
 decided to use *Skip-gram*{TODO bibl} which predicts surrounding context based on the target
 word. As an alternative we tried out using *CBOW*, but Skip-gram turned out to be
@@ -142,3 +142,12 @@ random choosing factor to the algorithm, but it is not implemented yet.
 - Oláh Gergely: olahkoo@gmail.com
 - Oczot Balázs: balix18@gmail.com
 - Bunth Tamás: btomi96@gmail.com
+
+## References
+
+[1] Peter F. Brown, Peter V. deSouza, Robert L. Mercer, Vincent J. Delia Pietra,
+Jenifer C. Lai, 1992, Class-based n-gram models of natural language, https://dl.acm.org/citation.cfm?id=176316
+
+[2]
+
+
