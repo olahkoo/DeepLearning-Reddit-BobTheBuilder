@@ -48,7 +48,7 @@ it can be used to create a word-based learning on comments later on.
 
 Our goal is to create a bidirectional map of words which maps the words to
 a one-hot encoded integer representation. Also, each word is paired up with an
-n-gram context{TODO bibl}, which basicly means the words occured in the same
+n-gram context{TODO bibl}, which basically means the words occurred in the same
 line before the current word.
 
 That way we can predict the next word based on the n-gram context.
@@ -58,13 +58,77 @@ of the words, and softmax is used as the activation of the output. The design of
 the model can be found in *word_learning.py*. The output of the network is
 vector of probabilities representing the likelihood of a word coming after the
 current word in a sentence. As a future plan we would like to take rating of the
-comment into consideration as well.
+comments into consideration as well.
 
 The hiperparameters of the model were chosen with a manual approach based on our
-intuition and several attempts. With adam optimization and categorical
+intuition and several attempts. With *adam* optimization and categorical
 crossentropy as a loss function the model seems to work pretty well.
 
 ### Word2vec approach
+
+As an alternative to the above two solutions we created a Keras implementation
+of a word2vec approach which aims to create a comment based on popularity and
+based on some kind of similarity between two words.
+
+The *word2vec_learning.py* file contains the preprocessing and the learning part
+of this method as well. The preprocessing part is slightly different compared to
+the solutions above. From the comments we need the following information:
+
+- An integer representation of each word. To achieve that we created a
+  bidirectional map of integer-word pairs.
+
+- The mean "score" of each word. It means the we calculated the mean popularity
+  of those comments which contains at least once the current word. In order to
+  achieve that it was also needed to calculate the occurrencies of the words.
+
+
+This implementation of *word2vec* uses Negative sampling{TODO bibl} in order to
+replace the expensive *sotfmax* activation with a simple sigmoid activation. We
+decided to use *Skip-gram*{TODO bibl} which predicts surrounding context based on the target
+word. As an alternative we tried out using *CBOW*, but Skip-gram turned out to be
+more effective in this scenario.
+
+As a similarity measure - which is the core of the word2vec learning process -
+we decided to use cosine similarity score{TODO bibl}, because it is used nowadays in most
+of the projects with similar problems.
+
+The learning process is the following:
+- The network takes two words - represented as an integer - as an input.
+- The two integers are converted to a vector representation with the help of a
+  network layer. This is an embedding layer{TODO bibl} which has a functionality
+  similar to a lookup table. The goal of the network is to teach this lookup
+  table to return "similar" vectors to similar words, and vectors with more
+  distance in case the input words are not similar.
+- We create a dot product of the two vectors which represents the two input
+  words. Also calculate the cosine similarity score.
+- The output of the network is a simple node with sigmoid activation. The output
+  will be close to 1 if the words were similar. It will be close to 0 in case
+  the words are used in a really different context.
+
+We can use the above network to predict words with similar context. Although
+this is a big success it is also needed to use up the popularity score of the
+words too. In order to do that we decided to do the following:
+
+1. Teach the *word2vec* neural network with the preprocessed comments.
+
+2. Start a sentence with a random word. The word "the" is used for testing.
+
+3. Run the prediction on each word in the dictionary paired up with the current
+   word. Find the top `n` similar words. `n=8` is used for testing.
+
+4. Choose the one with the maximum popularity score from the top n similar
+   words. This will be the next word. GOTO 2.
+
+Theoretically the above algorithm can run forever although it will run into an
+infinite cycle most likely. In order to avoid that it would make sense to add a
+random choosing factor to the algorithm, but it is not implemented yet.
+
+#### Usage
+
+- Make sure `data/askreddit.json` is available (run *comment_collector.py* if
+  not.
+- run *word2vec_learning.py*. It will take a while. One can see the predicted
+  words in the output.
 
 ## Team members
 
