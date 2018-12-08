@@ -92,7 +92,7 @@ the solutions above. From the comments we need the following information:
 This implementation of *word2vec* uses Negative sampling[1] in order to
 replace the expensive *sotfmax* activation with a simple sigmoid activation. We
 decided to use *Skip-gram*[2] which predicts surrounding context based on the target
-word. As an alternative we tried out using *CBOW*i[2], but Skip-gram turned out to be
+word. As an alternative we tried out using *CBOW*[2], but Skip-gram turned out to be
 more effective in this scenario.
 
 As a similarity measure - which is the core of the word2vec learning process -
