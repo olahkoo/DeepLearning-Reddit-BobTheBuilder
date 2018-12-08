@@ -89,7 +89,7 @@ for submission in customSubmissionList:
 
         comment_queue.extend(comment.replies)
 
-    with open('data4.json', 'w') as outfile:
+    with open('data/askreddit.json', 'w') as outfile:
         json.dump(serializableComments, outfile, indent=4, sort_keys=True, default=lambda o: o._asdict())
 
     print(f'Summission comment counter: {submission.num_comments}')

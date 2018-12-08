@@ -10,32 +10,58 @@ learned correlations.
 
 The learning dataset consists of tokenized and character wise preprocessed data.
 
-## Source files
+## Obtaining data
 
-### comment_collector.py
+In order to get a major number of Reddit comments we decided to use the Rest API
+of Reddit.
 
-Collects some comments from a reddit submission using the Reddit API.
+The content of *comment_collector.py* is responsible for downloading the
+relevant data from the website. To achieve that it was also required to register
+a new account, so we can use its id to obtain the data.
 
-### character_based_lstm_learning.py
-
-Prepares the data for an LSTM, using character based tokenisation, then finds a decent model structure using the hyperas hyperparameter optimization tool and further trains this model and saves different versions of it. The models then can be tested to generate some characters based on a random comment.
+The script stores the data in a json file called `askreddit.json`. It should be
+put to the `data` directory so the below methods could find it.
 
 ## Training and testing
 
-We made two different solutions, character based and word based. These two require different method to be trained and tested.
+We made three different solutions:
 
-### Character based
+1. Character based,
+2. Word based, 
+3. Word2vec based.
 
-The training and testing are implemented in the character_based_lstm_learning.py source file. The training is implemented using keras, so it is required to be installed. The GPU version is also recommended as the training is relatively slow (1 - 1.5 hours on a 1050 TI). The hyperas package is also needed.
+These methods require different preprocessing, training and testing approach.
+The following section will expain the above solutions in detail.
 
-The training starts with a hyperparameter optimization phase, where we train our model for 10 epochs. After that, we choose the best model and further train it with 10 epochs 9 times, and save each iteration into the models directory. This process can be invoked by calling the train_model() function at the end of the file.
+### Character-based
 
-If we want to test the network we can call the test_data() function. It reads one of the previously trained networks (the last one by default), chooses a random comment from the data set, then generates 400 additional character based on that comment. The iteration parameter of the function determines which model to load from 0-9, where 9 is the one which we trained for the most epochs.
+The training and testing are implemented in the
+*character_based_lstm_learning.py* source file. The training is implemented
+using keras, so it is required to be installed. The GPU version is also
+recommended as the training is relatively slow (1 - 1.5 hours on a 1050 TI). The
+hyperas package is also needed.
 
-If you don't want to do both training and testing, you have to comment one of the above function calls at the end of the character_based_lstm_learning.py file and running it like that.
+The training starts with a hyperparameter optimization phase, where we train our
+model for 10 epochs. After that, we choose the best model and further train it
+with 10 epochs 9 times, and save each iteration into the models directory. This
+process can be invoked by calling the train_model() function at the end of the
+file.
 
+If we want to test the network we can call the test_data() function. It reads
+one of the previously trained networks (the last one by default), chooses a
+random comment from the data set, then generates 400 additional character based
+on that comment. The iteration parameter of the function determines which model
+to load from 0-9, where 9 is the one which we trained for the most epochs.
 
-### Word based
+If you don't want to do both training and testing, you have to comment one of
+the above function calls at the end of the character_based_lstm_learning.py file
+and running it like that.
+
+#### Usage
+
+Simply run the *character_based_lstm_learning.py* file.
+
+### Word-based
 
 The word based deep learning is a separate part of the project, which aims to
 solve the same problem with a different approach.
@@ -161,5 +187,4 @@ This section proveds more resources that were used during the work.
 - [Reddig API documentation](https://www.reddit.com/dev/api/)
 - [A Word2Vec Keras tutorial](http://adventuresinmachinelearning.com/word2vec-keras-tutorial/)
 - [How to Develop Word Embeddings in Python with Gensim](https://machinelearningmastery.com/develop-word-embeddings-python-gensim/)
-
 
