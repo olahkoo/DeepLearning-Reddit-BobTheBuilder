@@ -216,5 +216,5 @@ def test_data(iteration = 9):
         print(''.join(rand_comment))
         print()
 
-train_model()
-test_data()
+# train_model()
+test_data(0)

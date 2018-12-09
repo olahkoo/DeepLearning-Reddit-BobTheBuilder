@@ -59,7 +59,7 @@ and running it like that.
 
 #### Usage
 
-Simply run the *character_based_lstm_learning.py* file.
+Simply run the *character_based_lstm_learning.py* file (comment out train_model() to test without training).
 
 ### Word-based
 
