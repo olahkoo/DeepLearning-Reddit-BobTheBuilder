@@ -2,7 +2,7 @@
 
 ## Documentation location
 
-The pdf docomentation can be seen in the documentation folder.
+The pdf documentation can be seen in the documentation folder.
 
 ## Task description
 
