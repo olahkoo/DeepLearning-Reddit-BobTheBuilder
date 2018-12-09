@@ -4,6 +4,8 @@ from keras.layers.embeddings import Embedding
 from keras.preprocessing.sequence import skipgrams
 from keras.preprocessing import sequence
 
+import random
+
 import collections
 import zipfile
 import json
@@ -11,6 +13,10 @@ import json
 import numpy as np
 import tensorflow as tf
 from keras_preprocessing.text import Tokenizer
+
+tf.set_random_seed(534564564)
+np.random.seed(534564564)
+random.seed(534564564)
 
 json_file_path = 'data/askreddit.json'
 
@@ -227,11 +233,14 @@ for i in range(20):
 
     nearest = (-predictions).argsort()[1:top_k + 1]
     # Choose the one which is the most popular
-    most_popular_score = score_dicts[nearest[0]]
-    most_popular_word = nearest[0]
-    for candidate in nearest:
-        if score_dicts[candidate] > most_popular_score:
-            most_popular_word = candidate
-            most_popular_score = score_dicts[candidate]
+
+    l = list(nearest)
+    l.sort(key=lambda x: score_dicts[x], reverse=True)
+    nearest = np.array(l)
+
+    random_nearest = nearest[random.randint(1, 5)]
+    most_popular_score = score_dicts[random_nearest]
+    most_popular_word = random_nearest
+
     print("[INFO] The next word is: '{}', with popularity: {}".format(reverse_dictionary[most_popular_word], most_popular_score))
     current_word = most_popular_word
