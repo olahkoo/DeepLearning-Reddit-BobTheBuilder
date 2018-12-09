@@ -1,5 +1,9 @@
 # DeepLearning-Reddit-BobTheBuilder
 
+## Documentation location
+
+The pdf docomentation can be seen in the documentation folder.
+
 ## Task description
 
 The goal of this solution is to generate text based on Reddit comments.
